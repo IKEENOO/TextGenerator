@@ -1,20 +1,18 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-class Output extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      value: props.value
-    }
-  }
+const Output = (props) => {
+  const { paragraphs, tag, includeHTML } = props;
 
-  render(){
-    return (
-      <div className="well output">
-        {this.props.value}
-      </div>
-    )
-  }
+  return (
+    <div className="output">
+      {includeHTML === "Yes" ? (
+        <p>{paragraphs.map(sentence => `<${tag}>${sentence}</${tag}>`)}</p>
+      ) : (
+        <p>{paragraphs.map(sentence => sentence)}</p>
+      )}
+    </div>
+  );
 }
+
 
 export default Output;

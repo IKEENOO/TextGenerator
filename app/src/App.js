@@ -1,64 +1,42 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Option from './Components/Options';
 import Output from './Components/Output';
-import Select from './Components/Controls/Select';
-import Text from './Components/Controls/Text';
-import axios from 'axios';
+import './App.css';
 
-class App extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      paras: 4,
-      html: true,
-      text: ''
-    }
-  }
+const App = () => {
+  const [paragraphs, setParagraphs] = useState([]);
+  const [tag, setTag] = useState('p');
+  const [inputValue, setInputValue] = useState(1);
+  const [includeHTML, setIncludeHTML] = useState("Yes");
 
-  componentWillMount(){
-    this.getSampleText();
-  }
+  useEffect(() => {
+    const url = `https://baconipsum.com/api/?type=all-meat&paras=${inputValue}&start-with-lorem=1`;
+    fetch(url).then(res => res.json()).then((data) => setParagraphs(data));
+  }, [inputValue]);
 
-  getSampleText(){
-    axios.get('http://hipsterjesus.com/api?paras='+this.state.paras+'&html='+this.state.html)
-      .then((response) => {
-        this.setState({text: response.data.text}, function(){
-          console.log(this.state);
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  showHtml(x){
-      this.setState({html: x}, this.getSampleText);
-  }
-
-  changeParas(number){
-      this.setState({paras: number}, this.getSampleText);
-  }
-
-  render() {
-    return (
-      <div className="App container">
-        <h1 className="text-center">ReactJS Sample Text Generator</h1>
-        <hr />
-        <form className="form-inline">
-          <div className="form-group">
-            <label>Paragraphs:</label>
-            <Text value={this.state.paras} onChange={this.changeParas.bind(this)} />
-          </div>
-          <div className="form-group">
-            <label>Include HTML:</label>
-            <Select value={this.state.html} onChange={this.showHtml.bind(this)} />
-          </div>
-        </form>
-        <br /><br />
-        <Output value={this.state.text} />
+  return (
+    <div className="App">F
+      <div className='container'>
+        <div className='title'>
+          <h1>Lorem Ipsum Text Generator</h1>
+        </div>
+        <Option
+          paragraphs={paragraphs}
+          includeHTML={includeHTML}
+          inputValue={inputValue}
+          tag={tag}
+          setIncludeHTML={setIncludeHTML}
+          setInputValue={setInputValue}
+          setTag={setTag}
+        />
+        <Output 
+          paragraphs={paragraphs}
+          tag={tag}
+          includeHTML={includeHTML}
+        />
       </div>
-    );
-  }
+    </div>
+  )
 }
 
 export default App;
